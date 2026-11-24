@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope"
+               xmlns:bib="http://supnum.mr/bib">
+  <soap:Body>
+    <soap:Fault>
+      <soap:Code>
+        <soap:Value>soap:Sender</soap:Value>
+      </soap:Code>
+      <soap:Reason>
+        <soap:Text xml:lang="fr">ISBN mal formé : 978-2-10</soap:Text>
+      </soap:Reason>
+      <soap:Detail>
+        <bib:IsbnInvalide>
+          <bib:isbn>978-2-10</bib:isbn>
+          <bib:formatAttendu>97[89]-d-d{2,5}-d{2,6}-d</bib:formatAttendu>
+        </bib:IsbnInvalide>
+      </soap:Detail>
+    </soap:Fault>
+  </soap:Body>
+</soap:Envelope>

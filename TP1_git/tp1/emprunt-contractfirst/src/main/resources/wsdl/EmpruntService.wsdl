@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="EmpruntService" targetNamespace="http://supnum.mr/bib"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:bib="http://supnum.mr/bib">
+
+  <wsdl:types>
+    <xs:schema targetNamespace="http://supnum.mr/bib" elementFormDefault="qualified">
+      <xs:simpleType name="IsbnType">
+        <xs:restriction base="xs:string">
+          <xs:pattern value="97[89]-\d-\d{2,5}-\d{2,6}-\d"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:complexType name="EmpruntType">
+        <xs:sequence>
+          <xs:element name="numero" type="xs:string"/>
+          <xs:element name="dateRetour" type="xs:date"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="emprunterLivre">
+        <xs:complexType><xs:sequence>
+          <xs:element name="idAdherent" type="xs:string"/>
+          <xs:element name="isbn" type="bib:IsbnType"/>
+        </xs:sequence></xs:complexType>
+      </xs:element>
+      <xs:element name="emprunterLivreResponse">
+        <xs:complexType><xs:sequence>
+          <xs:element name="emprunt" type="bib:EmpruntType"/>
+        </xs:sequence></xs:complexType>
+      </xs:element>
+      <xs:element name="LivreIndisponible">
+        <xs:complexType><xs:sequence>
+          <xs:element name="isbn" type="bib:IsbnType"/>
+          <xs:element name="retourPrevu" type="xs:date"/>
+        </xs:sequence></xs:complexType>
+      </xs:element>
+    </xs:schema>
+  </wsdl:types>
+
+  <wsdl:message name="emprunterLivreRequest">
+    <wsdl:part name="parameters" element="bib:emprunterLivre"/>
+  </wsdl:message>
+  <wsdl:message name="emprunterLivreResponse">
+    <wsdl:part name="parameters" element="bib:emprunterLivreResponse"/>
+  </wsdl:message>
+  <wsdl:message name="LivreIndisponibleFault">
+    <wsdl:part name="fault" element="bib:LivreIndisponible"/>
+  </wsdl:message>
+
+  <wsdl:portType name="EmpruntPortType">
+    <wsdl:operation name="emprunterLivre">
+      <wsdl:input message="bib:emprunterLivreRequest"/>
+      <wsdl:output message="bib:emprunterLivreResponse"/>
+      <wsdl:fault name="LivreIndisponible" message="bib:LivreIndisponibleFault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+
+  <wsdl:binding name="EmpruntSoapBinding" type="bib:EmpruntPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="emprunterLivre">
+      <soap:operation soapAction="http://supnum.mr/bib/emprunterLivre"/>
+      <wsdl:input><soap:body use="literal"/></wsdl:input>
+      <wsdl:output><soap:body use="literal"/></wsdl:output>
+      <wsdl:fault name="LivreIndisponible"><soap:fault name="LivreIndisponible" use="literal"/></wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+
+  <wsdl:service name="EmpruntService">
+    <wsdl:port name="EmpruntPort" binding="bib:EmpruntSoapBinding">
+      <soap:address location="http://localhost:8080/bib/EmpruntService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
